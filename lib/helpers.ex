@@ -2,8 +2,11 @@
 defmodule Iso8583Pasrser.Helpers do
 
   def chomp(input, len) do
-    <<head::binary-size(len)>> <> tail = input
-    {head, tail}
+    case byte_size(input) >= len do
+      true -> <<head::binary-size(len)>> <> tail = input
+              {:ok, head, tail}
+      false -> {:error, "len supplied must smaller or equal to input"}
+    end
   end
 
   def type_multiplr(type) do
@@ -22,14 +25,21 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def calc_len(size, profile, type) do
+
     size =
       case type do
-        :x -> size
+        :x -> case rem(size,8) == 0 do
+                true -> size
+                false -> size + (8 - rem(size,8))
+              end
         td when td in [:n, :z] -> size + rem(size, 2)
         _ -> 1
       end
 
-    trunc(size/type_multiplr(type)/pro_multiplr(profile))
+    size
+      |> div(type_multiplr(type))
+      |> div(pro_multiplr(profile))
+
   end
 
   def translate(raw_data, profile, type) do
