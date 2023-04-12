@@ -1,4 +1,4 @@
-defmodule Iso8583ParserCalcLenTest do
+defmodule Iso8583ParserCalcLenBinTest do
   use ExUnit.Case
   doctest Iso8583Parser
   alias Iso8583Pasrser.Helpers
@@ -79,6 +79,61 @@ defmodule Iso8583ParserCalcLenTest do
     assert(Helpers.calc_len(19, :bin, :x) == 3)
   end
 
+  test "calculate len 20, :bin, :x" do
+    assert(Helpers.calc_len(20, :bin, :x) == 3)
+  end
+
+  test "calculate len 21, :bin, :x" do
+    assert(Helpers.calc_len(21, :bin, :x) == 3)
+  end
+
+  test "calculate len 22, :bin, :x" do
+    assert(Helpers.calc_len(22, :bin, :x) == 3)
+  end
+
+  test "calculate len 23, :bin, :x" do
+    assert(Helpers.calc_len(23, :bin, :x) == 3)
+  end
+
+  test "calculate len 24, :bin, :x" do
+    assert(Helpers.calc_len(24, :bin, :x) == 3)
+  end
+
+  test "calculate len 25, :bin, :x" do
+    assert(Helpers.calc_len(25, :bin, :x) == 4)
+  end
+
+  test "calculate len 26, :bin, :x" do
+    assert(Helpers.calc_len(26, :bin, :x) == 4)
+  end
+
+  test "calculate len 27, :bin, :x" do
+    assert(Helpers.calc_len(27, :bin, :x) == 4)
+  end
+
+  test "calculate len 28, :bin, :x" do
+    assert(Helpers.calc_len(28, :bin, :x) == 4)
+  end
+
+  test "calculate len 29, :bin, :x" do
+    assert(Helpers.calc_len(29, :bin, :x) == 4)
+  end
+
+  test "calculate len 30, :bin, :x" do
+    assert(Helpers.calc_len(30, :bin, :x) == 4)
+  end
+
+  test "calculate len 31, :bin, :x" do
+    assert(Helpers.calc_len(31, :bin, :x) == 4)
+  end
+
+  test "calculate len 32, :bin, :x" do
+    assert(Helpers.calc_len(32, :bin, :x) == 4)
+  end
+
+  test "calculate len 33, :bin, :x" do
+    assert(Helpers.calc_len(33, :bin, :x) == 5)
+  end
 
 
 end

@@ -9,7 +9,7 @@ defmodule Iso8583Pasrser.Helpers do
     end
   end
 
-  def type_multiplr(type) do
+  def type_unit_size(type) do
     case type do
       :x -> 8
       td when td in [:n, :z] -> 2
@@ -37,8 +37,8 @@ defmodule Iso8583Pasrser.Helpers do
       end
 
     size
-      |> div(type_multiplr(type))
-      |> div(pro_multiplr(profile))
+      |> div(type_unit_size(type))
+      |> Kernel.*(pro_multiplr(profile))
 
   end
 
