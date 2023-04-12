@@ -139,5 +139,9 @@ defmodule Iso8583ParserCalcLenAsciiTest do
     assert(Helpers.calc_len(34, :ascii, :x) == 10)
   end
 
+  test "calculate len 35, :ascii, :x" do
+    assert(Helpers.calc_len(35, :ascii, :x) == 10)
+  end
+
 
 end
