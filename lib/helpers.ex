@@ -33,7 +33,7 @@ defmodule Iso8583Pasrser.Helpers do
                 false -> size + (8 - rem(size,8))
               end
         td when td in [:n, :z] -> size + rem(size, 2)
-        _ -> 1
+        _ -> size
       end
 
     size
@@ -49,7 +49,7 @@ defmodule Iso8583Pasrser.Helpers do
           td when td in [:x,:z] -> Base.decode16!(raw_data)
           _ -> raw_data
         end
-      _ ->
+      :bin ->
         case type do
           td when td in [:x,:a] -> raw_data
           td when td in [:n,:z] -> Base.encode16(raw_data)

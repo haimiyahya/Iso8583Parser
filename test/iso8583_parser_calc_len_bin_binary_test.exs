@@ -1,4 +1,4 @@
-defmodule Iso8583ParserCalcLenBinTest do
+defmodule Iso8583ParserCalcLenBinBinaryTest do
   use ExUnit.Case
   doctest Iso8583Parser
   alias Iso8583Pasrser.Helpers
