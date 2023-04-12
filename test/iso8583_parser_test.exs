@@ -6,7 +6,7 @@ defmodule Iso8583ParserTest do
     assert Iso8583Parser.hello() == :world
   end
 
-  test "this is a test" do
+  test "this is a test 2" do
     assert "test" == "test"
   end
 end
