@@ -27,26 +27,36 @@ defmodule Iso8583Pasrser.Helpers do
   def calc_len(size, profile, type) do
 
     size =
-      case type do
-        :x -> case rem(size,8) == 0 do
-                true -> size
-                false -> size + (8 - rem(size,8))
-              end
-        td when td in [:n, :z] -> size + rem(size, 2)
-        _ -> size
+      case profile do
+        :bin ->
+          case type do
+            :x -> case rem(size,8) == 0 do
+                    true -> size |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+                    false -> (size + (8 - rem(size,8))) |> div(type_unit_size(type)) |> Kernel.*(pro_multiplr(profile))
+                  end
+            td when td in [:z, :n] -> size + rem(size, 2) |> div(type_unit_size(type))
+            _ -> size |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+          end
+        :ascii ->
+          case type do
+            :x -> case rem(size,8) == 0 do
+              true -> size |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+              false -> (size + (8 - rem(size,8))) |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+            end
+            :z -> size |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+            :n -> size |> Kernel.*(pro_multiplr(profile)) |> div(type_unit_size(type))
+            _ -> size |> div(type_unit_size(type))
+          end
       end
-
     size
-      |> div(type_unit_size(type))
-      |> Kernel.*(pro_multiplr(profile))
-
   end
 
   def translate(raw_data, profile, type) do
     case profile do
       :ascii ->
         case type do
-          td when td in [:x,:z] -> Base.decode16!(raw_data)
+          :x -> Base.decode16!(raw_data)
+          :z -> raw_data
           _ -> raw_data
         end
       :bin ->
