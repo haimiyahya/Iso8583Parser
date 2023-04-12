@@ -78,4 +78,19 @@ defmodule Iso8583Pasrser.Helpers do
         {bmp1, the_rest}
     end
   end
+
+  def bitmap_to_list(bitmap) do
+    case is_binary(bitmap) do
+      true ->
+        for(<<r::1 <- bitmap>>, do: r)
+        |> Enum.with_index(1)
+        |> Enum.map(fn {a, b} -> {b, a} end)
+        # remove field where the bit was not set
+        |> Enum.filter(fn {_, b} -> b == 1 end)
+        |> Enum.map(fn {a, _} -> a end)
+
+      false ->
+        []
+    end
+  end
 end
