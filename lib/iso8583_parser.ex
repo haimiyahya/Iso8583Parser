@@ -9,13 +9,13 @@ defmodule Iso8583Parser do
         0 -> {Helpers.calc_len(size, profile, type), input}
         _sz ->
             head_b_len = Helpers.calc_len(head, profile, :n)
-            {front, back} = Helpers.chomp(input, head_b_len)
+            {:ok, front, back} = Helpers.chomp(input, head_b_len)
             body_len = Helpers.translate(front, profile, :n) |> String.to_integer
             body_b_len = Helpers.calc_len(body_len, profile, type)
             {body_b_len, back}
       end
 
-    {front, back} = Helpers.chomp(back, head_val)
+    {:ok, front, back} = Helpers.chomp(back, head_val)
 
     body_tsltd = Helpers.translate(front, profile, type)
 
@@ -37,7 +37,7 @@ defmodule Iso8583Parser do
 
     init = {the_rest, %{}, spec, profile}
 
-    result =
+    {the_rest, result, _, _} =
       Enum.reduce(bitlist, init,
         fn pos, {input, output, fmt, profile} ->
           process(pos, input, output, fmt, profile) end
@@ -45,6 +45,9 @@ defmodule Iso8583Parser do
 
     # todo, check if inside output contains field 1 (which contains the value of second bitmap)
     # if field 1 exists, reduce again buat start from after 64
+
+    IO.inspect("the rest:")
+    IO.inspect(the_rest)
 
     result
   end
