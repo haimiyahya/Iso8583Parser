@@ -4,15 +4,15 @@ defmodule Iso8583Parser do
   def process(pos, input, output, fmt, profile) do
     %{^pos => {head, type, size}} = fmt
 
-    {head_val, back} =
+    {body_len, head_val, back} =
       case head do
-        0 -> {Helpers.calc_len(size, profile, type), input}
+        0 -> {size, Helpers.calc_len(size, profile, type), input}
         _sz ->
             head_b_len = Helpers.calc_len(head, profile, :n)
             {:ok, front, back} = Helpers.chomp(input, head_b_len)
             body_len = Helpers.translate(front, profile, :n) |> String.to_integer
             body_b_len = Helpers.calc_len(body_len, profile, type)
-            {body_b_len, back}
+            {body_len, body_b_len, back}
       end
 
     {:ok, front, back} = Helpers.chomp(back, head_val)
@@ -22,7 +22,7 @@ defmodule Iso8583Parser do
     body_tsltd =
       case type do
         :bin -> binary_part(body_tsltd, 0, trunc(size/8) )
-        _ -> String.slice(body_tsltd, 0, size)
+        _ -> String.slice(body_tsltd, 0, body_len)
       end
 
     {back, Map.put(output,pos,body_tsltd), fmt, profile}
