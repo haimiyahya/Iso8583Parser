@@ -390,5 +390,235 @@ defmodule Iso8583ParserDisassableBinTest do
 
   end
 
+  test "binary msg field (2)track2(39), num(12), (3)ascii(999)" do
+
+    import Bitwise
+
+    bit_list = [1,2,3]
+
+    map1 = Enum.reduce(bit_list, %{},
+      fn x, acc -> Map.update(
+        acc, div(x, 8), (1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
+        ) end)
+
+    # produce a binary representation from the map above
+    bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+
+    f1_val = "123456789012345678901234567890123456789"
+    f2_val = "876543210123"
+    f3_val = "8765432101234567890123456"
+
+    f1 = f1_val
+    f2 = f2_val
+
+    f1_len = f1_val |> String.length()
+
+    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+
+    f1 = f1_len <> Base.decode16!(f1_val <> "0")
+
+    f2 = Base.decode16!(f2_val)
+
+    f3_len = f3_val |> String.length()
+    f3_len = f3_len |> Integer.to_string() |> String.pad_leading(4, "0") |> Base.decode16!()
+    f3 = f3_len <> f3_val
+
+    isomsg = bmp <> f1 <> f2 <> f3
+
+    spec = %{
+      1 => {2, :z, 39},
+      2 => {0, :n, 12},
+      3 => {3, :a, 999},
+    }
+
+    diassambled = Iso8583Parser.disassemble(isomsg, spec, :bin)
+
+    %{
+      1 => f1_out,
+      2 => f2_out,
+      3 => f3_out
+    } = diassambled
+
+    assert(f1_out == f1_val)
+    assert(f2_out == f2_val)
+    assert(f3_out == f3_val)
+
+  end
+
+
+  test "binary msg field (2)track2(10), (2)num(50), (2)ascii(999)" do
+
+    import Bitwise
+
+    bit_list = [1,2,3]
+
+    map1 = Enum.reduce(bit_list, %{},
+      fn x, acc -> Map.update(
+        acc, div(x, 8), (1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
+        ) end)
+
+    # produce a binary representation from the map above
+    bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+
+    f1_val = "1234567890"
+    f2_val = "876543210123"
+    f3_val = "8765432101234567890123456"
+
+    f1 = f1_val
+    f2 = f2_val
+
+    f1_len = f1_val |> String.length()
+    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f1 = f1_len <> Base.decode16!(f1_val)
+
+    f2_len = f2_val |> String.length()
+    f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f2 = f2_len <> Base.decode16!(f2_val)
+
+    f3_len = f3_val |> String.length()
+    f3_len = f3_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f3 = f3_len <> f3_val
+
+    isomsg = bmp <> f1 <> f2 <> f3
+
+    spec = %{
+      1 => {2, :z, 39},
+      2 => {2, :n, 50},
+      3 => {2, :a, 999},
+    }
+
+    diassambled = Iso8583Parser.disassemble(isomsg, spec, :bin)
+
+    %{
+      1 => f1_out,
+      2 => f2_out,
+      3 => f3_out
+    } = diassambled
+
+    assert(f1_out == f1_val)
+    assert(f2_out == f2_val)
+    assert(f3_out == f3_val)
+
+  end
+
+  test "binary msg field (2)binary(50), (1)ascii(5), ascii(7)" do
+
+    import Bitwise
+
+    bit_list = [1,2,3]
+
+    map1 = Enum.reduce(bit_list, %{},
+      fn x, acc -> Map.update(
+        acc, div(x, 8), (1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
+        ) end)
+
+    # produce a binary representation from the map above
+    bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+
+    f1_val = <<1,2,3,4,5>>
+    f2_val = "876543210123"
+    f3_val = "8765456"
+
+    f1 = f1_val
+    f2 = f2_val
+
+    f1_len = f1_val |> byte_size()
+    f1_len = f1_len * 8
+    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f1 = f1_len <> f1_val
+
+    f2_len = f2_val |> String.length()
+    f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f2 = f2_len <> f2_val
+
+    #f3_len = f3_val |> String.length()
+    #f3_len = f3_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    #f3 = f3_len <> f3_val
+    f3 = f3_val
+
+    isomsg = bmp <> f1 <> f2 <> f3
+
+    spec = %{
+      1 => {2, :x, 50},
+      2 => {1, :a, 5},
+      3 => {0, :a, 7},
+    }
+
+    diassambled = Iso8583Parser.disassemble(isomsg, spec, :bin)
+
+    %{
+      1 => f1_out,
+      2 => f2_out,
+      3 => f3_out
+    } = diassambled
+
+    assert(f1_out == f1_val)
+    assert(f2_out == f2_val)
+    assert(f3_out == f3_val)
+
+  end
+
+  test "binary msg field (1)binary(10), ascii(7), binary(64)" do
+
+    import Bitwise
+
+    bit_list = [1,2,3]
+
+    map1 = Enum.reduce(bit_list, %{},
+      fn x, acc -> Map.update(
+        acc, div(x, 8), (1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
+        ) end)
+
+    # produce a binary representation from the map above
+    bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+
+    f1_val = <<1>>
+    f2_val = "8765432"
+    f3_val = <<1,2,3,4,5,6,7,8>>
+
+    f1 = f1_val
+    f2 = f2_val
+
+    f1_len = f1_val |> byte_size()
+    f1_len = f1_len * 8
+    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f1 = f1_len <> f1_val
+
+    #f2_len = f2_val |> String.length()
+    #f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    #f2 = f2_len <> f2_val
+    f2 = f2_val
+
+    #f3_len = f3_val |> String.length()
+    #f3_len = f3_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    #f3 = f3_len <> f3_val
+    f3 = f3_val
+
+    isomsg = bmp <> f1 <> f2 <> f3
+
+    spec = %{
+      1 => {1, :x, 10},
+      2 => {0, :a, 7},
+      3 => {0, :x, 64},
+    }
+
+    diassambled = Iso8583Parser.disassemble(isomsg, spec, :bin)
+
+    %{
+      1 => f1_out,
+      2 => f2_out,
+      3 => f3_out
+    } = diassambled
+
+    assert(f1_out == f1_val)
+    assert(f2_out == f2_val)
+    assert(f3_out == f3_val)
+
+  end
+
 
 end
