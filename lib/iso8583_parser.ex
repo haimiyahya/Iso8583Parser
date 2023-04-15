@@ -48,19 +48,17 @@ defmodule Iso8583Parser do
     result = case Map.get(result, 1) do
       nil -> result
       second_bmp ->
-        bitlist2 = Helpers.bitmap_to_list(second_bmp)
+
+        bitlist2 = Helpers.bitmap_to_list(<<0,0,0,0,0,0,0,0>> <> second_bmp)
         init = {the_rest, result, spec, profile}
 
         {the_rest, result, _, _} =
-          Enum.reduce(bitlist, init,
+          Enum.reduce(bitlist2, init,
             fn pos, {input, output, fmt, profile} ->
               process(pos, input, output, fmt, profile) end
           )
         result
     end
-
-    #IO.inspect("the rest:")
-    #IO.inspect(the_rest)
 
     result
   end
