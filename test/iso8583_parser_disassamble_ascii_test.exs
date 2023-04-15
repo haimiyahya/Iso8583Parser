@@ -6,7 +6,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -18,34 +18,36 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = <<128,0,0,0,0,0,0,0>>
-    f1 = f1_val |> Base.encode16()
-    f2_val = "23"
-    f2_len = f2_val |> String.length() |> Integer.to_string() |> String.pad_leading(2, "0")
-    f2 = f2_len <> f2_val
-    f3_val = "1234567890ABCDEF1234567890ABCDEF12345"
+    f2_val = <<128,0,0,0,0,0,0,0>>
+    f2 = f2_val |> Base.encode16()
+
+    f3_val = "23"
     f3_len = f3_val |> String.length() |> Integer.to_string() |> String.pad_leading(2, "0")
     f3 = f3_len <> f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "1234567890ABCDEF1234567890ABCDEF12345"
+    f4_len = f4_val |> String.length() |> Integer.to_string() |> String.pad_leading(2, "0")
+    f4 = f4_len <> f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :x, 64},
-      2 => {2, :n, 6},
-      3 => {2, :z, 37},
+      2 => {0, :x, 64},
+      3 => {2, :n, 6},
+      4 => {2, :z, 37},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -53,7 +55,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -65,35 +67,34 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f2_val = "123456"
-    f3_val = "87654321"
+    f2_val = <<128,0,0,0,0,0,0,0>>
+    f2 = f2_val |> Base.encode16()
 
-    f1_val = <<128,0,0,0,0,0,0,0>>
-    f1 = f1_val |> Base.encode16()
-
-    f2 = f2_val
-
+    f3_val = "123456"
     f3 = f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "87654321"
+    f4 = f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :x, 64},
-      2 => {0, :n, 6},
-      3 => {0, :n, 8},
+      2 => {0, :x, 64},
+      3 => {0, :n, 6},
+      4 => {0, :n, 8},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -101,7 +102,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -113,35 +114,34 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
+    f2_val = <<128,0,0,0,0,0,0,0>>
+    f2 = f2_val |> Base.encode16()
 
-    f1_val = <<128,0,0,0,0,0,0,0>>
-    f1 = f1_val |> Base.encode16()
-
-    f2_val = "12345678901234567890123456"
-    f2 = f2_val
-
-    f3_val = "876543212346789012"
+    f3_val = "12345678901234567890123456"
     f3 = f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "876543212346789012"
+    f4 = f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :x, 64},
-      2 => {0, :n, 26},
-      3 => {0, :n, 18},
+      2 => {0, :x, 64},
+      3 => {0, :n, 26},
+      4 => {0, :n, 18},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -149,7 +149,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -161,34 +161,34 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = <<128,0,0,0>>
-    f1 = f1_val |> Base.encode16()
+    f2_val = <<128,0,0,0>>
+    f2 = f2_val |> Base.encode16()
 
-    f2_val = "123456789012345"
-    f2 = f2_val
-
-    f3_val = "87654321"
+    f3_val = "123456789012345"
     f3 = f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "87654321"
+    f4 = f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :x, 32},
-      2 => {0, :n, 15},
-      3 => {0, :n, 8},
+      2 => {0, :x, 32},
+      3 => {0, :n, 15},
+      4 => {0, :n, 8},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -196,7 +196,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     # produce a map like this %{0 => 64, 1=> 96} where the 64 contains all bits set for the byte
     # the flow is:
@@ -216,36 +216,36 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = <<128,0,0,0>>
-    f1 = f1_val |> Base.encode16()
+    f2_val = <<128,0,0,0>>
+    f2 = f2_val |> Base.encode16()
 
-    f2_val = "123456789012"
-    f2_len = f2_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
-    f2 = f2_len <> f2_val
-
-    f3_val = "87654321"
+    f3_val = "123456789012"
     f3_len = f3_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
     f3 = f3_len <> f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "87654321"
+    f4_len = f4_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
+    f4 = f4_len <> f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :x, 32},
-      2 => {2, :n, 15},
-      3 => {2, :n, 8},
+      2 => {0, :x, 32},
+      3 => {2, :n, 15},
+      4 => {2, :n, 8},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -253,7 +253,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -265,36 +265,36 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = "123456789012345"
-    f1_len = f1_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
-    f1 = f1_len <> f1_val
-
-    f2_val = "8765432"
+    f2_val = "123456789012345"
     f2_len = f2_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
     f2 = f2_len <> f2_val
 
-    f3_val = "abcdefghijklmnopqrst"
-    f3 = f3_val
+    f3_val = "8765432"
+    f3_len = f3_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
+    f3 = f3_len <> f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "abcdefghijklmnopqrst"
+    f4 = f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {2, :n, 25},
-      2 => {2, :n, 7},
-      3 => {0, :a, 20},
+      2 => {2, :n, 25},
+      3 => {2, :n, 7},
+      4 => {0, :a, 20},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -302,7 +302,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -314,38 +314,35 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
+    f2_val = "12"
+    f2_len = f2_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
+    f2 = f2_len <> f2_val
 
-    f1_val = "12"
-    f1_len = f1_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
-    f1 = f1_len <> f1_val
-
-    f2_val = "8765432"
-    f2 = f2_val
-
-    f3_val = "abcdefghijklmnopqrs"
-    #f3_len = f1_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
-    #f3 = f3_len <> f3_val
+    f3_val = "8765432"
     f3 = f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "abcdefghijklmnopqrs"
+    f4 = f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {2, :n, 25},
-      2 => {0, :n, 7},
-      3 => {0, :a, 19},
+      2 => {2, :n, 25},
+      3 => {0, :n, 7},
+      4 => {0, :a, 19},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -353,7 +350,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -365,36 +362,36 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = "12345"
-    f1_len = f1_val |> String.length |> Integer.to_string() |> String.pad_leading(3, "0")
-    f1 = f1_len <> f1_val
+    f2_val = "12345"
+    f2_len = f2_val |> String.length |> Integer.to_string() |> String.pad_leading(3, "0")
+    f2 = f2_len <> f2_val
 
-    f2_val = "8765432"
-    f2 = f2_val
+    f3_val = "8765432"
+    f3 = f3_val
 
-    f3_val = "abcdefgh"
-    f3_len = f3_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
-    f3 = f3_len <> f3_val
+    f4_val = "abcdefgh"
+    f4_len = f4_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0")
+    f4 = f4_len <> f4_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {3, :n, 999},
-      2 => {0, :n, 7},
-      3 => {2, :a, 8},
+      2 => {3, :n, 999},
+      3 => {0, :n, 7},
+      4 => {2, :a, 8},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -403,7 +400,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -415,36 +412,36 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = "123456789012345"
-    f1 = f1_val
-
-    f2_val = "876543210123"
+    f2_val = "123456789012345"
     f2 = f2_val
 
-    f3_val = <<1,2,3,4,5,6,7>>
-    f3_len = f3_val |> String.length()
-    f3_len = f3_len * 8 |> Integer.to_string() |> String.pad_leading(3, "0")
-    f3 = f3_len <> Base.encode16(f3_val)
+    f3_val = "876543210123"
+    f3 = f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = <<1,2,3,4,5,6,7>>
+    f4_len = f4_val |> String.length()
+    f4_len = f4_len * 8 |> Integer.to_string() |> String.pad_leading(3, "0")
+    f4 = f4_len <> Base.encode16(f4_val)
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {0, :a, 15},
-      2 => {0, :a, 12},
-      3 => {3, :x, 999},
+      2 => {0, :a, 15},
+      3 => {0, :a, 12},
+      4 => {3, :x, 999},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -452,7 +449,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -464,38 +461,38 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = "123456789012345678901234567890123456789"
-    f1_len = f1_val |> String.length()
-    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0")
-    f1 = f1_len <> f1_val
+    f2_val = "123456789012345678901234567890123456789"
+    f2_len = f2_val |> String.length()
+    f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0")
+    f2 = f2_len <> f2_val
 
-    f2_val = "876543210123"
-    f2 = f2_val
+    f3_val = "876543210123"
+    f3 = f3_val
 
-    f3_val = "8765432101234567890123456"
-    f3_len = f3_val |> String.length()
-    f3_len = f3_len |> Integer.to_string() |> String.pad_leading(3, "0")
-    f3 = f3_len <> f3_val
+    f4_val = "8765432101234567890123456"
+    f4_len = f4_val |> String.length()
+    f4_len = f4_len |> Integer.to_string() |> String.pad_leading(3, "0")
+    f4 = f4_len <> f4_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {2, :z, 39},
-      2 => {0, :n, 12},
-      3 => {3, :a, 999},
+      2 => {2, :z, 39},
+      3 => {0, :n, 12},
+      4 => {3, :a, 999},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -504,7 +501,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -516,40 +513,40 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = "1234567890"
-    f1_len = f1_val |> String.length()
-    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0")
-    f1 = f1_len <> f1_val
-
-    f2_val = "876543210123"
+    f2_val = "1234567890"
     f2_len = f2_val |> String.length()
     f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0")
     f2 = f2_len <> f2_val
 
-    f3_val = "8765432101234567890123456"
+    f3_val = "876543210123"
     f3_len = f3_val |> String.length()
     f3_len = f3_len |> Integer.to_string() |> String.pad_leading(2, "0")
     f3 = f3_len <> f3_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    f4_val = "8765432101234567890123456"
+    f4_len = f4_val |> String.length()
+    f4_len = f4_len |> Integer.to_string() |> String.pad_leading(2, "0")
+    f4 = f4_len <> f4_val
+
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {2, :z, 10},
-      2 => {2, :n, 50},
-      3 => {2, :a, 999},
+      2 => {2, :z, 10},
+      3 => {2, :n, 50},
+      4 => {2, :a, 999},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -557,7 +554,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -569,39 +566,39 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = <<1,2,3,4,5>>
-    f1_len = f1_val |> byte_size()
-    f1_len = f1_len * 8
-    f1_len = f1_len |> Integer.to_string() |> String.pad_leading(2, "0")
-    f1 = f1_len <> Base.encode16(f1_val)
+    f2_val = <<1,2,3,4,5>>
+    f2_len = f2_val |> byte_size()
+    f2_len = f2_len * 8
+    f2_len = f2_len |> Integer.to_string() |> String.pad_leading(2, "0")
+    f2 = f2_len <> Base.encode16(f2_val)
 
-    f2_val = "87654"
-    f2_len = f2_val |> String.length()
-    f2_len = f2_len |> Integer.to_string()
-    f2 = f2_len <> f2_val
+    f3_val = "87654"
+    f3_len = f3_val |> String.length()
+    f3_len = f3_len |> Integer.to_string()
+    f3 = f3_len <> f3_val
 
-    f3_val = "8765456"
-    f3 = f3_val
+    f4_val = "8765456"
+    f4 = f4_val
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {2, :x, 50},
-      2 => {1, :a, 5},
-      3 => {0, :a, 7},
+      2 => {2, :x, 50},
+      3 => {1, :a, 5},
+      4 => {0, :a, 7},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 
@@ -609,7 +606,7 @@ defmodule Iso8583ParserDisassableAsciiTest do
 
     import Bitwise
 
-    bit_list = [1,2,3]
+    bit_list = [2,3,4]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -621,37 +618,37 @@ defmodule Iso8583ParserDisassableAsciiTest do
     bmp = Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     bmp = Base.encode16(bmp)
 
-    f1_val = <<1>>
-    f1_len = f1_val |> byte_size()
-    f1_len = f1_len * 8
-    f1_len = f1_len |> Integer.to_string()
-    f1 = f1_len <> Base.encode16(f1_val)
+    f2_val = <<1>>
+    f2_len = f2_val |> byte_size()
+    f2_len = f2_len * 8
+    f2_len = f2_len |> Integer.to_string()
+    f2 = f2_len <> Base.encode16(f2_val)
 
-    f2_val = "8765432"
-    f2 = f2_val
+    f3_val = "8765432"
+    f3 = f3_val
 
-    f3_val = <<1,2,3,4,5,6,7,8>>
-    f3 = Base.encode16(f3_val)
+    f4_val = <<1,2,3,4,5,6,7,8>>
+    f4 = Base.encode16(f4_val)
 
-    isomsg = bmp <> f1 <> f2 <> f3
+    isomsg = bmp <> f2 <> f3 <> f4
 
     spec = %{
-      1 => {1, :x, 10},
-      2 => {0, :a, 7},
-      3 => {0, :x, 64},
+      2 => {1, :x, 10},
+      3 => {0, :a, 7},
+      4 => {0, :x, 64},
     }
 
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :ascii)
 
     %{
-      1 => f1_out,
       2 => f2_out,
-      3 => f3_out
+      3 => f3_out,
+      4 => f4_out
     } = diassambled
 
-    assert(f1_out == f1_val)
     assert(f2_out == f2_val)
     assert(f3_out == f3_val)
+    assert(f4_out == f4_val)
 
   end
 

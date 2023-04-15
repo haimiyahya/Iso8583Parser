@@ -37,7 +37,7 @@ defmodule Iso8583Parser do
 
     init = {the_rest, %{}, spec, profile}
 
-    {_the_rest, result, _, _} =
+    {the_rest, result, _, _} =
       Enum.reduce(bitlist, init,
         fn pos, {input, output, fmt, profile} ->
           process(pos, input, output, fmt, profile) end
@@ -45,6 +45,19 @@ defmodule Iso8583Parser do
 
     # todo, check if inside output contains field 1 (which contains the value of second bitmap)
     # if field 1 exists, reduce again buat start from after 64
+    result = case Map.get(result, 1) do
+      nil -> result
+      second_bmp ->
+        bitlist2 = Helpers.bitmap_to_list(second_bmp)
+        init = {the_rest, result, spec, profile}
+
+        {the_rest, result, _, _} =
+          Enum.reduce(bitlist, init,
+            fn pos, {input, output, fmt, profile} ->
+              process(pos, input, output, fmt, profile) end
+          )
+        result
+    end
 
     #IO.inspect("the rest:")
     #IO.inspect(the_rest)
