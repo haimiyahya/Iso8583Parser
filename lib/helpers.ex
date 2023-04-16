@@ -79,6 +79,45 @@ defmodule Iso8583Pasrser.Helpers do
     end
   end
 
+   def form_bmp(disassembled, profile) do
+
+    import Bitwise
+
+    bit_list =
+      1..127
+        |> Enum.reduce([],
+          fn x, acc ->
+            case Map.has_key?(disassembled, x) do
+              true -> [x|acc]
+              false -> acc
+            end
+          end)
+        |> Enum.reverse
+
+    map1 = Enum.reduce(bit_list, %{},
+      fn x, acc -> Map.update(
+        acc, div(x, 8), (1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
+        ) end)
+
+    map1 = case Enum.any?(bit_list, fn x -> x > 64 end) do
+        true -> Map.update!(map1, (1 <<< 7), fn x -> x + (1 <<< 7) end)
+        false -> map1
+    end
+
+    bmp = case Enum.any?(bit_list, fn x -> x > 64 end) do
+      true -> Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+      false -> Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
+    end
+
+    case profile do
+      :ascii -> Base.encode16(bmp)
+      :bin -> bmp
+    end
+
+    bmp
+   end
+
   def bitmap_to_list(bitmap) do
     case is_binary(bitmap) do
       true ->

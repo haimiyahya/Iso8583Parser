@@ -29,8 +29,6 @@ defmodule Iso8583Parser do
   end
 
   def disassemble(msg, spec, profile) do # msg, spec, profile
-    # todo: get list of bits present, hardcode for now
-
     {first_bmp, the_rest} = Helpers.dissect_first_bmp(msg, profile)
 
     bitlist = Helpers.bitmap_to_list(first_bmp)
@@ -43,8 +41,6 @@ defmodule Iso8583Parser do
           process(pos, input, output, fmt, profile) end
       )
 
-    # todo, check if inside output contains field 1 (which contains the value of second bitmap)
-    # if field 1 exists, reduce again buat start from after 64
     result = case Map.get(result, 1) do
       nil -> result
       second_bmp ->
@@ -52,7 +48,7 @@ defmodule Iso8583Parser do
         bitlist2 = Helpers.bitmap_to_list(<<0,0,0,0,0,0,0,0>> <> second_bmp)
         init = {the_rest, result, spec, profile}
 
-        {the_rest, result, _, _} =
+        {_the_rest, result, _, _} =
           Enum.reduce(bitlist2, init,
             fn pos, {input, output, fmt, profile} ->
               process(pos, input, output, fmt, profile) end
@@ -62,5 +58,40 @@ defmodule Iso8583Parser do
 
     result
   end
+
+
+  # def assemble(disassembled, spec, profile) do # msg, spec, profile
+
+  #   # form bmp
+
+  #   {first_bmp, the_rest} = Helpers.dissect_first_bmp(msg, profile)
+
+  #   bitlist = Helpers.bitmap_to_list(first_bmp)
+
+  #   init = {the_rest, %{}, spec, profile}
+
+  #   {the_rest, result, _, _} =
+  #     Enum.reduce(bitlist, init,
+  #       fn pos, {input, output, fmt, profile} ->
+  #         process(pos, input, output, fmt, profile) end
+  #     )
+
+  #   result = case Map.get(result, 1) do
+  #     nil -> result
+  #     second_bmp ->
+
+  #       bitlist2 = Helpers.bitmap_to_list(<<0,0,0,0,0,0,0,0>> <> second_bmp)
+  #       init = {the_rest, result, spec, profile}
+
+  #       {_the_rest, result, _, _} =
+  #         Enum.reduce(bitlist2, init,
+  #           fn pos, {input, output, fmt, profile} ->
+  #             process(pos, input, output, fmt, profile) end
+  #         )
+  #       result
+  #   end
+
+  #   result
+  # end
 
 end
