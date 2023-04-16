@@ -1,4 +1,4 @@
-defmodule Iso8583ParserDisassableAsciiTest do
+defmodule Iso8583ParserDisassableAsciiFirstBmpOnlyTest do
   use ExUnit.Case
   doctest Iso8583Parser
 

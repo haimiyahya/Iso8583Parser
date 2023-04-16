@@ -1,11 +1,11 @@
-defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
+defmodule Iso8583ParserDisassableBinFirstAndSecondBmpTest do
   use ExUnit.Case
   doctest Iso8583Parser
 
   test "binary msg field bin, numeric(h), track 2(h)" do
     import Bitwise
 
-    bit_list = [1,65,66,67]
+    bit_list = [1, 30,66,67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -16,8 +16,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<128,0,0,0,0,0,0,0>>
-    f65 = f65_val
+    f30_val = <<128,0,0,0,0,0,0,0>>
+    f30 = f30_val
 
     f66_val = "1234"
     f66_len = f66_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
@@ -27,11 +27,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_val |> String.length |> Integer.to_string() |> Base.decode16!()
     f67 = f67_len <> Base.decode16!(f67_val <> "0")
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :x, 64},
+      30 => {0, :x, 64},
       66 => {2, :n, 6},
       67 => {2, :z, 37},
     }
@@ -40,12 +40,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -55,7 +55,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1,65,66,67]
+    bit_list = [1,30,66,67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -66,8 +66,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<128,0,0,0,0,0,0,0>>
-    f65 = f65_val
+    f30_val = <<128,0,0,0,0,0,0,0>>
+    f30 = f30_val
 
     f66_val = "123456"
     f66 = Base.decode16!(f66_val)
@@ -75,11 +75,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "87654321"
     f67 = Base.decode16!(f67_val)
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :x, 64},
+      30 => {0, :x, 64},
       66 => {0, :n, 6},
       67 => {0, :n, 8},
     }
@@ -88,12 +88,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -103,7 +103,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1,65,66,67]
+    bit_list = [1,30,66,67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -114,8 +114,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<128,0,0,0,0,0,0,0>>
-    f65 = f65_val
+    f30_val = <<128,0,0,0,0,0,0,0>>
+    f30 = f30_val
 
     f66_val = "12345678901234567890123456"
     f66 = Base.decode16!(f66_val)
@@ -123,11 +123,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "876543212346789012"
     f67 = Base.decode16!(f67_val)
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :x, 64},
+      30 => {0, :x, 64},
       66 => {0, :n, 26},
       67 => {0, :n, 18},
     }
@@ -136,12 +136,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -151,7 +151,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -162,8 +162,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<128,0,0,0>>
-    f65 = f65_val
+    f30_val = <<128,0,0,0>>
+    f30 = f30_val
 
     f66_val = "123456789012345"
     f66 = Base.decode16!(f66_val <> "0")  ## pad right with zero
@@ -171,11 +171,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "87654321"
     f67 = Base.decode16!(f67_val)
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :x, 32},
+      30 => {0, :x, 32},
       66 => {0, :n, 15},
       67 => {0, :n, 8},
     }
@@ -184,12 +184,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -199,7 +199,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     # produce a map like this %{0 => 64, 1=> 96} where the 64 contains all bits set for the byte
     # the flow is:
@@ -218,8 +218,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<128,0,0,0>>
-    f65 = f65_val
+    f30_val = <<128,0,0,0>>
+    f30 = f30_val
 
     f66_val = "123456789012"
     f66_len = f66_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
@@ -229,11 +229,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
     f67 = f67_len <> Base.decode16!(f67_val)
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :x, 32},
+      30 => {0, :x, 32},
       66 => {2, :n, 15},
       67 => {2, :n, 8},
     }
@@ -242,12 +242,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -257,7 +257,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -268,9 +268,9 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "123456789012345"
-    f65_len = f65_val |> String.length |> Integer.to_string() |> Base.decode16!()
-    f65 = f65_len <> Base.decode16!(f65_val <> "0") # pad right because not even
+    f30_val = "123456789012345"
+    f65_len = f30_val |> String.length |> Integer.to_string() |> Base.decode16!()
+    f30 = f65_len <> Base.decode16!(f30_val <> "0") # pad right because not even
 
     f66_val = "8765432"
     f66_len = f66_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
@@ -279,11 +279,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "abcdefghijklmnopqrst"
     f67 = f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {2, :n, 25},
+      30 => {2, :n, 25},
       66 => {2, :n, 7},
       67 => {0, :a, 20},
     }
@@ -292,12 +292,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -307,7 +307,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -318,9 +318,9 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "12"
-    f65_len = f65_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
-    f65 = f65_len <> Base.decode16!(f65_val)
+    f30_val = "12"
+    f65_len = f30_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
+    f30 = f65_len <> Base.decode16!(f30_val)
 
     f66_val = "8765432"
     f66 = Base.decode16!(f66_val <> "0") # pad right because not even
@@ -328,11 +328,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "abcdefghijklmnopqrs"
     f67 = f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {2, :n, 25},
+      30 => {2, :n, 25},
       66 => {0, :n, 7},
       67 => {0, :a, 19},
     }
@@ -341,12 +341,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -356,7 +356,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -367,9 +367,9 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "12345"
-    f65_len = f65_val |> String.length |> Integer.to_string() |> String.pad_leading(4, "0") |> Base.decode16!()
-    f65 = f65_len <> Base.decode16!(f65_val <> "0")
+    f30_val = "12345"
+    f65_len = f30_val |> String.length |> Integer.to_string() |> String.pad_leading(4, "0") |> Base.decode16!()
+    f30 = f65_len <> Base.decode16!(f30_val <> "0")
 
     f66_val = "8765432"
     f66 = Base.decode16!(f66_val <> "0") # pad right because not even
@@ -378,11 +378,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_val |> String.length |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
     f67 = f67_len <> f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {3, :n, 999},
+      30 => {3, :n, 999},
       66 => {0, :n, 7},
       67 => {2, :a, 8},
     }
@@ -391,12 +391,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -407,7 +407,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -418,8 +418,8 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "123456789012345"
-    f65 = f65_val
+    f30_val = "123456789012345"
+    f30 = f30_val
 
     f66_val = "876543210123"
     f66 = f66_val
@@ -429,11 +429,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_len * 8 |> Integer.to_string() |> String.pad_leading(4, "0") |> Base.decode16!()
     f67 = f67_len <> f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {0, :a, 15},
+      30 => {0, :a, 15},
       66 => {0, :a, 12},
       67 => {3, :x, 999},
     }
@@ -442,12 +442,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -457,7 +457,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -468,10 +468,10 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "123456789012345678901234567890123456789"
-    f65_len = f65_val |> String.length()
+    f30_val = "123456789012345678901234567890123456789"
+    f65_len = f30_val |> String.length()
     f65_len = f65_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
-    f65 = f65_len <> Base.decode16!(f65_val <> "0")
+    f30 = f65_len <> Base.decode16!(f30_val <> "0")
 
     f66_val = "876543210123"
     f66 = Base.decode16!(f66_val)
@@ -481,11 +481,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_len |> Integer.to_string() |> String.pad_leading(4, "0") |> Base.decode16!()
     f67 = f67_len <> f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {2, :z, 39},
+      30 => {2, :z, 39},
       66 => {0, :n, 12},
       67 => {3, :a, 999},
     }
@@ -493,12 +493,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     diassambled = Iso8583Parser.disassemble(isomsg, spec, :bin)
 
     %{
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -509,7 +509,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -520,10 +520,10 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = "1234567890"
-    f65_len = f65_val |> String.length()
+    f30_val = "1234567890"
+    f65_len = f30_val |> String.length()
     f65_len = f65_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
-    f65 = f65_len <> Base.decode16!(f65_val)
+    f30 = f65_len <> Base.decode16!(f30_val)
 
     f66_val = "876543210123"
     f66_len = f66_val |> String.length()
@@ -535,11 +535,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_len = f67_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
     f67 = f67_len <> f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {2, :z, 39},
+      30 => {2, :z, 39},
       66 => {2, :n, 50},
       67 => {2, :a, 999},
     }
@@ -548,12 +548,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -563,7 +563,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -574,11 +574,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<1,2,3,4,5>>
-    f65_len = f65_val |> byte_size()
+    f30_val = <<1,2,3,4,5>>
+    f65_len = f30_val |> byte_size()
     f65_len = f65_len * 8
     f65_len = f65_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
-    f65 = f65_len <> f65_val
+    f30 = f65_len <> f30_val
 
     f66_val = "876543210123"
     f66_len = f66_val |> String.length()
@@ -588,11 +588,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = "8765456"
     f67 = f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {2, :x, 50},
+      30 => {2, :x, 50},
       66 => {1, :a, 5},
       67 => {0, :a, 7},
     }
@@ -601,12 +601,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
@@ -616,7 +616,7 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     import Bitwise
 
-    bit_list = [1, 65, 66, 67]
+    bit_list = [1, 30, 66, 67]
 
     map1 = Enum.reduce(bit_list, %{},
       fn x, acc -> Map.update(
@@ -627,11 +627,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     # produce a binary representation from the map above
     bmp = Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
 
-    f65_val = <<1>>
-    f65_len = f65_val |> byte_size()
+    f30_val = <<1>>
+    f65_len = f30_val |> byte_size()
     f65_len = f65_len * 8
     f65_len = f65_len |> Integer.to_string() |> String.pad_leading(2, "0") |> Base.decode16!()
-    f65 = f65_len <> f65_val
+    f30 = f65_len <> f30_val
 
     f66_val = "8765432"
     f66 = f66_val
@@ -639,11 +639,11 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
     f67_val = <<1,2,3,4,5,6,7,8>>
     f67 = f67_val
 
-    isomsg = bmp <> f65 <> f66 <> f67
+    isomsg = bmp <> f30 <> f66 <> f67
 
     spec = %{
       1 => {0, :x, 64},
-      65 => {1, :x, 10},
+      30 => {1, :x, 10},
       66 => {0, :a, 7},
       67 => {0, :x, 64},
     }
@@ -652,12 +652,12 @@ defmodule Iso8583ParserDisassableBinSecondBmpOnlyTest do
 
     %{
       1 => _,
-      65 => f65_out,
+      30 => f65_out,
       66 => f66_out,
       67 => f67_out
     } = diassambled
 
-    assert(f65_out == f65_val)
+    assert(f65_out == f30_val)
     assert(f66_out == f66_val)
     assert(f67_out == f67_val)
 
