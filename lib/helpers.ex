@@ -67,6 +67,24 @@ defmodule Iso8583Pasrser.Helpers do
     end
   end
 
+  def encode(field_data, profile, type) do
+    case profile do
+      :ascii ->
+        case type do
+          :x -> Base.encode16(field_data)
+          :z -> field_data
+          _ -> field_data
+        end
+      :bin ->
+        case type do
+          td when td in [:x,:a] -> field_data
+          td when td in [:n,:z] ->
+            field_data = field_data <> (rem(String.length(field_data), 2) != 0 && "0" || "")
+            Base.decode16!(field_data)
+        end
+    end
+  end
+
   def dissect_first_bmp(msg, profile) do
     case profile do
       :bin ->
