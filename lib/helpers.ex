@@ -79,12 +79,12 @@ defmodule Iso8583Pasrser.Helpers do
     end
   end
 
-   def form_bmp(disassembled, profile) do
+  def form_bmp(disassembled, profile) do
 
     import Bitwise
 
     bit_list =
-      1..127
+      2..128
         |> Enum.reduce([],
           fn x, acc ->
             case Map.has_key?(disassembled, x) do
@@ -94,29 +94,41 @@ defmodule Iso8583Pasrser.Helpers do
           end)
         |> Enum.reverse
 
-    map1 = Enum.reduce(bit_list, %{},
-      fn x, acc -> Map.update(
-        acc, div(x, 8), (1 <<< (8-rem(x,8))),
-          fn cur_val -> cur_val + (1 <<< (8-rem(x,8))) end
-        ) end)
-
     map1 = case Enum.any?(bit_list, fn x -> x > 64 end) do
-        true -> Map.update!(map1, (1 <<< 7), fn x -> x + (1 <<< 7) end)
-        false -> map1
-    end
+      true -> %{0 => 128}
+      false -> %{}
+      end
+
+    # description of logic below:
+    # - the destination is map1
+    # - map key is the position of byte starting with 0
+    # - map value is the byte value
+    # - to calculate byte position, division operation is used, however problem if the position is divisible by 8 then it will get the next byte
+    # - so need to check if division by 8 will not produce remainder, if yes then minus 1, otherwise use the normal calculation, this detail is regarding this part:
+    # -   rem(x,8) == 0 && div(x,8)-1 || div(x, 8)
+    # - another similar issue during calculating the bmp value for the position divisible by 8
+    # - under situation whenthe pos value divided by 8 produce reminder, since the reminder is actually from the next byte,
+    # - the correct way to calculate is to minus the reminder to 8
+    # - however this is problematic if the reminder is 0, it will bitshift by 8 that cause a byte to overflow to 256
+    # - so, in case reminder is 0, just set as 1
+      map1 = Enum.reduce(bit_list, map1,
+      fn x, acc -> Map.update(
+        acc, rem(x,8) == 0 && div(x,8)-1 || div(x, 8), (rem(x,8) == 0 && 1 || 1 <<< (8-rem(x,8))),
+          fn cur_val -> cur_val + (rem(x,8) == 0 && 1 || 1 <<< (8-rem(x,8))) end
+        ) end)
 
     bmp = case Enum.any?(bit_list, fn x -> x > 64 end) do
       true -> Enum.reduce(0..15, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
       false -> Enum.reduce(0..7, <<>>, fn x, acc -> acc <> <<Map.get(map1, x, 0)>> end)
     end
 
-    case profile do
+    bmp = case profile do
       :ascii -> Base.encode16(bmp)
       :bin -> bmp
     end
 
     bmp
-   end
+  end
 
   def bitmap_to_list(bitmap) do
     case is_binary(bitmap) do
@@ -130,6 +142,25 @@ defmodule Iso8583Pasrser.Helpers do
 
       false ->
         []
+    end
+  end
+
+  def truncate_data(type, size, data) do
+    case type do
+      :x ->
+        case byte_size(data) > div(size,8) do
+          true ->
+            {:ok, remain, _removed} = chomp(data, div(size,8))
+            remain
+          false -> data
+        end
+      _ ->
+        case String.length(data) > size do
+          true ->
+            {:ok, remain, _removed} = chomp(data, size)
+            remain
+          false -> data
+        end
     end
   end
 end
