@@ -10,14 +10,14 @@ defmodule Iso8583Parser do
         _sz ->
             head_b_len = Helpers.calc_len(head, profile, :n)
             {:ok, front, back} = Helpers.chomp(input, head_b_len)
-            body_len = Helpers.translate(front, profile, :n) |> String.to_integer
+            body_len = Helpers.decode(front, profile, :n) |> String.to_integer
             body_b_len = Helpers.calc_len(body_len, profile, type)
             {body_len, body_b_len, back}
       end
 
     {:ok, front, back} = Helpers.chomp(back, head_val)
 
-    body_tsltd = Helpers.translate(front, profile, type)
+    body_tsltd = Helpers.decode(front, profile, type)
 
     body_tsltd =
       case type do

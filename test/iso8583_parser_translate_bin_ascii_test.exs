@@ -1,57 +1,57 @@
-defmodule Iso8583ParserTranslateBinAsciiTest do
+defmodule Iso8583ParserDecodeBinAsciiTest do
   use ExUnit.Case
   doctest Iso8583Parser
   alias Iso8583Pasrser.Helpers
 
-  test "translate bin 1 bytes" do
-    assert(Helpers.translate("a", :bin, :a) == "a")
+  test "decode bin 1 bytes" do
+    assert(Helpers.decode("a", :bin, :a) == "a")
   end
 
-  test "translate bin 2 bytes" do
-    assert(Helpers.translate("ab", :bin, :a) == "ab")
+  test "decode bin 2 bytes" do
+    assert(Helpers.decode("ab", :bin, :a) == "ab")
   end
 
-  test "translate bin 3 bytes" do
-    assert(Helpers.translate("abc", :bin, :a) == "abc")
+  test "decode bin 3 bytes" do
+    assert(Helpers.decode("abc", :bin, :a) == "abc")
   end
 
-  test "translate bin 4 bytes" do
-    assert(Helpers.translate("abcd", :bin, :a) == "abcd")
+  test "decode bin 4 bytes" do
+    assert(Helpers.decode("abcd", :bin, :a) == "abcd")
   end
 
-  test "translate bin 5 bytes" do
-    assert(Helpers.translate("abcde", :bin, :a) == "abcde")
+  test "decode bin 5 bytes" do
+    assert(Helpers.decode("abcde", :bin, :a) == "abcde")
   end
 
-  test "translate bin 6 bytes" do
-    assert(Helpers.translate("abcdef", :bin, :a) == "abcdef")
+  test "decode bin 6 bytes" do
+    assert(Helpers.decode("abcdef", :bin, :a) == "abcdef")
   end
 
-  test "translate bin 7 bytes" do
-    assert(Helpers.translate("abcdefg", :bin, :a) == "abcdefg")
+  test "decode bin 7 bytes" do
+    assert(Helpers.decode("abcdefg", :bin, :a) == "abcdefg")
   end
 
-  test "translate bin 8 bytes" do
-    assert(Helpers.translate("abcdefgh", :bin, :a) == "abcdefgh")
+  test "decode bin 8 bytes" do
+    assert(Helpers.decode("abcdefgh", :bin, :a) == "abcdefgh")
   end
 
-  test "translate bin 9 bytes" do
-    assert(Helpers.translate("abcdefghi", :bin, :a) == "abcdefghi")
+  test "decode bin 9 bytes" do
+    assert(Helpers.decode("abcdefghi", :bin, :a) == "abcdefghi")
   end
 
-  test "translate bin 10 bytes" do
-    assert(Helpers.translate("abcdefghij", :bin, :a) == "abcdefghij")
+  test "decode bin 10 bytes" do
+    assert(Helpers.decode("abcdefghij", :bin, :a) == "abcdefghij")
   end
 
-  test "translate bin 11 bytes" do
-    assert(Helpers.translate("abcdefghijk", :bin, :a) == "abcdefghijk")
+  test "decode bin 11 bytes" do
+    assert(Helpers.decode("abcdefghijk", :bin, :a) == "abcdefghijk")
   end
 
-  test "translate bin 12 bytes" do
-    assert(Helpers.translate("abcdefghijkl", :bin, :a) == "abcdefghijkl")
+  test "decode bin 12 bytes" do
+    assert(Helpers.decode("abcdefghijkl", :bin, :a) == "abcdefghijkl")
   end
 
-  test "translate bin 13 bytes" do
-    assert(Helpers.translate("abcdefghijklm", :bin, :a) == "abcdefghijklm")
+  test "decode bin 13 bytes" do
+    assert(Helpers.decode("abcdefghijklm", :bin, :a) == "abcdefghijklm")
   end
 end

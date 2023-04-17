@@ -51,7 +51,7 @@ defmodule Iso8583Pasrser.Helpers do
     size
   end
 
-  def translate(raw_data, profile, type) do
+  def decode(raw_data, profile, type) do
     case profile do
       :ascii ->
         case type do
