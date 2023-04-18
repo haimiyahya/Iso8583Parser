@@ -9,6 +9,7 @@ defmodule Iso8583Pasrser.Helpers do
     end
   end
 
+  @spec type_unit_size(any) :: 1 | 2 | 8
   def type_unit_size(type) do
     case type do
       :x -> 8
@@ -166,9 +167,9 @@ defmodule Iso8583Pasrser.Helpers do
   def truncate_data(type, size, data) do
     case type do
       :x ->
-        case byte_size(data) > div(size,8) do
+        case byte_size(data) > div(size,8)+(rem(size, 8) > 0 && 1 || 0) do # in case have remaining, take the next byte also
           true ->
-            {:ok, remain, _removed} = chomp(data, div(size,8))
+            {:ok, remain, _removed} = chomp(data, div(size,8)+(rem(size, 8) > 0 && 1 || 0))
             remain
           false -> data
         end

@@ -1,5 +1,5 @@
 defmodule Iso8583ParserFormBinBmpTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Iso8583Parser
 
   test "form bin bitmap <= 65, 234" do

@@ -59,5 +59,57 @@ defmodule Iso8583Parser do
     result
   end
 
+  #def process_assemble(pos, field_value, fmt, profile) do
+  #  %{^pos => {head, type, size}} = fmt
+
+  #  {body_len, head_val, data} =
+  #    case head do
+  #      0 -> <<>>
+  #      head_sz ->
+  #        end
+  #    end
+
+    # todo: pad if required
+
+    #{:ok, front, back} = Helpers.chomp(back, head_val)
+
+    #body_tsltd = Helpers.translate(front, profile, type)
+
+    #body_tsltd =
+    #  case type do
+    #    :bin -> binary_part(body_tsltd, 0, trunc(size/8) )
+    #    _ -> String.slice(body_tsltd, 0, body_len)
+    #  end
+
+    #{back, Map.put(output,pos,body_tsltd), fmt, profile}
+
+  #end
+
+  def build_header(head_size, data_type, max_size, field_value, profile) do
+    truncated_value = Helpers.truncate_data(data_type, max_size, field_value)
+
+    data_size =
+      case data_type do
+        :x -> byte_size(truncated_value)*8
+        _ -> String.length(truncated_value)
+      end
+    header_len = Helpers.calc_len(head_size, profile, :n) * Helpers.type_unit_size(:n)
+    header_val =
+      Integer.to_string(data_size)
+        |> String.pad_leading(header_len, "0")
+        |> Helpers.encode(profile, :n)
+    header_val
+  end
+
+  #def build_body(data_type, max_size, field_value, profile) do
+  #  truncated_value = Helpers.truncate_data(data_type, max_size, field_value)
+  #  data_size =
+  #    case data_type do
+  #      :x -> byte_size(truncated_value)*8
+  #      _ -> String.length(truncated_value)
+  #    end
+  #  body_len = Helpers.calc_len(head_size, profile, :n) * Helpers.type_unit_size(:n)
+  #end
+
 
 end

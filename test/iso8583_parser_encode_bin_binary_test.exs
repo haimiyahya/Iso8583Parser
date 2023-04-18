@@ -1,5 +1,5 @@
 defmodule Iso8583ParserEncodeBinBinaryTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Iso8583Parser
   alias Iso8583Pasrser.Helpers
 

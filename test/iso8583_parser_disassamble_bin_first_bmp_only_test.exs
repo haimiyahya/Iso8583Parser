@@ -1,5 +1,5 @@
 defmodule Iso8583ParserDisassableBinFirstBmpOnlyTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Iso8583Parser
 
   test "binary msg field bin, numeric(h), track 2(h)" do
