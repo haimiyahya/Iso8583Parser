@@ -101,15 +101,32 @@ defmodule Iso8583Parser do
     header_val
   end
 
-  #def build_body(data_type, max_size, field_value, profile) do
-  #  truncated_value = Helpers.truncate_data(data_type, max_size, field_value)
-  #  data_size =
-  #    case data_type do
-  #      :x -> byte_size(truncated_value)*8
-  #      _ -> String.length(truncated_value)
-  #    end
-  #  body_len = Helpers.calc_len(head_size, profile, :n) * Helpers.type_unit_size(:n)
-  #end
+  def build_body(head_size, data_type, max_size, field_value, profile) do
+   truncated_value = Helpers.truncate_data(data_type, max_size, field_value)
+
+    padded_value =
+      case head_size do
+        0 ->
+          case data_type do
+            :x ->
+              case byte_size(truncated_value) < (div(max_size,8)+(rem(max_size, 8) > 0 && 1 || 0)) do
+                true ->
+                  pad = (div(max_size,8)+(rem(max_size, 8) > 0 && 1 || 0)) - byte_size(truncated_value)
+                  truncated_value <> <<0::pad*8>>
+                false ->
+                  truncated_value
+              end
+            :n ->
+              String.pad_trailing(truncated_value, max_size, "0")
+            _ ->
+              String.pad_trailing(truncated_value, max_size, " ")
+          end
+        _ -> truncated_value
+      end
+
+      Helpers.encode(padded_value, profile, data_type)
+
+  end
 
 
 end
