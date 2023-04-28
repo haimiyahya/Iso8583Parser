@@ -1,7 +1,13 @@
 
 defmodule Iso8583Pasrser.Helpers do
+  use ExUnit.Case
 
   def chomp(input, len) do
+
+    assert(is_binary(input))
+    assert(is_integer(len))
+    assert(len >= 0)
+
     case byte_size(input) >= len do
       true -> <<head::binary-size(len)>> <> tail = input
               {:ok, head, tail}
@@ -11,6 +17,9 @@ defmodule Iso8583Pasrser.Helpers do
 
   @spec type_unit_size(any) :: 1 | 2 | 8
   def type_unit_size(type) do
+
+    assert(is_atom(type))
+
     case type do
       :x -> 8
       td when td in [:n, :z] -> 2
@@ -19,6 +28,9 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def pro_multiplr(profile) do
+
+    assert(is_atom(profile))
+
     case profile do
       :ascii -> 2
       _ -> 1
@@ -26,6 +38,13 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def calc_len(size, profile, type) do
+
+    assert(is_integer(size))
+    assert(size >= 0)
+
+    assert(is_atom(profile))
+
+    assert(is_atom(type))
 
     size =
       case profile do
@@ -53,6 +72,11 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def decode(raw_data, profile, type) do
+
+    assert(is_binary(raw_data))
+    assert(is_atom(profile))
+    assert(is_atom(type))
+
     case profile do
       :ascii ->
         case type do
@@ -69,6 +93,11 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def encode(field_data, profile, type) do
+
+    assert(is_binary(field_data))
+    assert(is_atom(profile))
+    assert(is_atom(type))
+
     case profile do
       :ascii ->
         case type do
@@ -87,6 +116,10 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def dissect_first_bmp(msg, profile) do
+
+    assert(is_binary(msg))
+    assert(is_atom(profile))
+
     case profile do
       :bin ->
         <<bmp1::binary-size(8)>> <> the_rest = msg
