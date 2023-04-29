@@ -198,11 +198,17 @@ defmodule Iso8583Pasrser.Helpers do
   end
 
   def truncate_data(type, size, data) do
+
+    assert(is_atom(type))
+    assert(is_integer(size))
+    assert(size > 0)
+    assert(is_binary(data))
+
     case type do
       :x ->
-        case byte_size(data) > div(size,8)+(rem(size, 8) > 0 && 1 || 0) do # in case have remaining, take the next byte also
+        case byte_size(data) > total_byte_for_bin_type(size) do
           true ->
-            {:ok, remain, _removed} = chomp(data, div(size,8)+(rem(size, 8) > 0 && 1 || 0))
+            {:ok, remain, _removed} = chomp(data, total_byte_for_bin_type(size))
             remain
           false -> data
         end
@@ -214,5 +220,9 @@ defmodule Iso8583Pasrser.Helpers do
           false -> data
         end
     end
+  end
+
+  def total_byte_for_bin_type(size) do
+    div(size,8)+(rem(size, 8) > 0 && 1 || 0) # in case have remaining, take the next byte also
   end
 end
